@@ -195,7 +195,7 @@ public class SMatrix implements HMatrix{
 	@Override
 	public void mult(SMatrix m){
 		SMatrix n = new SMatrix(cols);
-		float temp = 0F;
+		float temp;
 		for(int i = 0; i < cols; i++) {
 			for(int j = 0; j < cols; j++) {
 				temp = 0;
@@ -227,7 +227,7 @@ public class SMatrix implements HMatrix{
 	
 	public NMatrix mult(NMatrix m, int c){
 		NMatrix n = new NMatrix(m.getCols(), cols);
-		float temp = 0F;
+		float temp;
 		for(int i = 0; i < m.getCols(); i++) {
 			for(int j = 0; j < cols; j++) {
 				temp = 0;
@@ -399,7 +399,7 @@ public class SMatrix implements HMatrix{
 	}
 	
 	public float det(){
-		float det = 0F;
+		float det = 0;
 		HMatrix temp;
 		SMatrix t;
 		if(cols == 1) {

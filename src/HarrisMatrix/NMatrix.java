@@ -43,12 +43,12 @@ public class NMatrix implements HMatrix{
 		return cols;
 	}
 	
-	public int getRows(){
-		return rows;
-	}
-	
 	public void setCols(int c){
 		cols = c;
+	}
+	
+	public int getRows(){
+		return rows;
 	}
 	
 	public void setRows(int r){
@@ -85,13 +85,13 @@ public class NMatrix implements HMatrix{
 	}
 	
 	@Override
-	public void setMatrix(float[][] m){
-		matrix = m;
+	public float[][] getMatrix(){
+		return matrix;
 	}
 	
 	@Override
-	public float[][] getMatrix(){
-		return matrix;
+	public void setMatrix(float[][] m){
+		matrix = m;
 	}
 	
 	@Override
@@ -207,7 +207,7 @@ public class NMatrix implements HMatrix{
 	
 	@Override
 	public void mult(SMatrix m){
-		float f = 0;
+		float f;
 		HMatrix temp = this.copy();
 		for(int i = 0; i < m.getCols(); i++) {
 			for(int j = 0; j < rows; j++) {
@@ -224,7 +224,7 @@ public class NMatrix implements HMatrix{
 	@Override
 	public void mult(NMatrix m){
 		NMatrix n = new NMatrix(m.getCols(), rows);
-		float temp = 0F;
+		float temp;
 		for(int i = 0; i < m.getCols(); i++) {
 			for(int j = 0; j < rows; j++) {
 				temp = 0;
@@ -248,7 +248,7 @@ public class NMatrix implements HMatrix{
 	public SMatrix mult(NMatrix m, boolean c){
 		SMatrix n = new SMatrix();
 		n.rebuild(rows);
-		float temp = 0F;
+		float temp;
 		for(int i = 0; i < m.getCols(); i++) {
 			for(int j = 0; j < rows; j++) {
 				temp = 0;
