@@ -113,14 +113,6 @@ public class NMatrix implements HMatrix{
 		reset(0F);
 	}
 	
-	public void reset(float f){
-		for(int i = 0; i < cols; i++) {
-			for(int j = 0; j < rows; j++) {
-				matrix[i][j] = f;
-			}
-		}
-	}
-	
 	@Override
 	public void increment(){
 		increment(1.0F);
@@ -239,6 +231,33 @@ public class NMatrix implements HMatrix{
 	}
 	
 	@Override
+	public void dotMult(HMatrix m){
+		if(m instanceof SMatrix) {
+			dotMult((SMatrix) m);
+		} else {
+			dotMult((NMatrix) m);
+		}
+	}
+	
+	@Override
+	public void dotMult(SMatrix m){
+		System.out.println("Cannot dot-multiply matrices as the dimensions do not match");
+	}
+	
+	@Override
+	public void dotMult(NMatrix m){
+		if(cols == m.getCols() && rows == m.getRows()) {
+			for(int i = 0; i < cols; i++) {
+				for(int j = 0; j < rows; j++) {
+					matrix[i][j] *= m.getValue(i, j);
+				}
+			}
+		} else {
+			System.out.println("Cannot dot-multiply matrices as the dimensions do not match");
+		}
+	}
+	
+	@Override
 	public NMatrix mult(SMatrix m, boolean c){
 		// cannot multiply an NMatrix by an SMatrix and get
 		return null;
@@ -321,6 +340,14 @@ public class NMatrix implements HMatrix{
 				System.out.print(matrix[i][j] + " ");
 			}
 			System.out.print("\n");
+		}
+	}
+	
+	public void reset(float f){
+		for(int i = 0; i < cols; i++) {
+			for(int j = 0; j < rows; j++) {
+				matrix[i][j] = f;
+			}
 		}
 	}
 }

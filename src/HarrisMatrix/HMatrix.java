@@ -4,8 +4,8 @@ public interface HMatrix{
 	
 	float getValue(int c, int r);
 	void setValue(int c, int r, float f);
-	void setMatrix(float[][] m);
 	float[][] getMatrix();
+	void setMatrix(float[][] m);
 	void fillCol(int c, float f);
 	void fillRow(int r, float f);
 	void reset();
@@ -18,6 +18,9 @@ public interface HMatrix{
 	void mult(HMatrix m);
 	void mult(SMatrix m);
 	void mult(NMatrix m);
+	void dotMult(HMatrix m);
+	void dotMult(SMatrix m);
+	void dotMult(NMatrix m);
 	NMatrix mult(SMatrix m, boolean c);
 	SMatrix mult(NMatrix m, boolean c);
 	void sub(HMatrix m);

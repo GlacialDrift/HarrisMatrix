@@ -25,6 +25,93 @@ public class SMatrix implements HMatrix{
 		fill(f);
 	}
 	
+	//build a permutation matrix of size n. Pass in an array of ints that describes the permutation matrix
+	// for example [0,3,1,4,2] represents:
+	// 1  0  0  0  0
+	// 0  0  0  1  0
+	// 0  0  1  0  0
+	// 0  0  0  0  1
+	// 0  1  0  0  0
+	public static SMatrix permutation(int n, int[] swaps){
+		SMatrix perm = new SMatrix(n, 0F);
+		for(int i = 0; i < swaps.length; i++) {
+			perm.setValue(swaps[i], i, 1F);
+		}
+		return perm;
+	}
+	
+	public static SMatrix rotation2D(){
+		double angle = ThreadLocalRandom.current().nextDouble(0, 2 * Math.PI);
+		SMatrix m = new SMatrix(2);
+		float sin = (float) Math.sin(angle);
+		float cos = (float) Math.cos(angle);
+		m.setValue(0, 0, cos);
+		m.setValue(0, 1, sin);
+		m.setValue(1, 0, -1 * sin);
+		m.setValue(1, 1, cos);
+		return m;
+	}
+	
+	public static SMatrix rotation2D(double angle){
+		SMatrix m = new SMatrix(2);
+		float sin = (float) Math.sin(angle);
+		float cos = (float) Math.cos(angle);
+		m.setValue(0, 0, cos);
+		m.setValue(0, 1, sin);
+		m.setValue(1, 0, -1 * sin);
+		m.setValue(1, 1, cos);
+		return m;
+	}
+	
+	public static SMatrix rotation3D(){
+		SMatrix m = new SMatrix(3);
+		double a = ThreadLocalRandom.current().nextDouble(0, 2 * Math.PI);
+		double b = ThreadLocalRandom.current().nextDouble(0, 2 * Math.PI);
+		double c = ThreadLocalRandom.current().nextDouble(0, 2 * Math.PI);
+		
+		float sina = (float) Math.sin(a);
+		float sinb = (float) Math.sin(b);
+		float sinc = (float) Math.sin(c);
+		float cosa = (float) Math.cos(a);
+		float cosb = (float) Math.cos(b);
+		float cosc = (float) Math.cos(c);
+		
+		m.setValue(0, 0, cosa * cosb);
+		m.setValue(0, 1, sina * cosb);
+		m.setValue(0, 2, -1 * sinb);
+		m.setValue(1, 0, cosa * sinb * sinc - sina * cosc);
+		m.setValue(1, 1, sina * sinb * sinc + cosa * cosc);
+		m.setValue(1, 2, cosb * sinc);
+		m.setValue(2, 0, cosa * sinb * cosc + sina * sinc);
+		m.setValue(2, 1, sina * sinb * cosc - cosa * sinc);
+		m.setValue(2, 2, cosb * cosc);
+		
+		return m;
+	}
+	
+	public static SMatrix rotation3D(double a, double b, double c){
+		SMatrix m = new SMatrix(3);
+		
+		float sina = (float) Math.sin(a);
+		float sinb = (float) Math.sin(b);
+		float sinc = (float) Math.sin(c);
+		float cosa = (float) Math.cos(a);
+		float cosb = (float) Math.cos(b);
+		float cosc = (float) Math.cos(c);
+		
+		m.setValue(0, 0, cosa * cosb);
+		m.setValue(0, 1, sina * cosb);
+		m.setValue(0, 2, -1 * sinb);
+		m.setValue(1, 0, cosa * sinb * sinc - sina * cosc);
+		m.setValue(1, 1, sina * sinb * sinc + cosa * cosc);
+		m.setValue(1, 2, cosb * sinc);
+		m.setValue(2, 0, cosa * sinb * cosc + sina * sinc);
+		m.setValue(2, 1, sina * sinb * cosc - cosa * sinc);
+		m.setValue(2, 2, cosb * cosc);
+		
+		return m;
+	}
+	
 	public void fill(float f){
 		for(int i = 0; i < cols; i++) {
 			for(int j = 0; j < cols; j++) {
@@ -85,13 +172,13 @@ public class SMatrix implements HMatrix{
 	}
 	
 	@Override
-	public void setMatrix(float[][] m){
-		matrix = m;
+	public float[][] getMatrix(){
+		return matrix;
 	}
 	
 	@Override
-	public float[][] getMatrix(){
-		return matrix;
+	public void setMatrix(float[][] m){
+		matrix = m;
 	}
 	
 	@Override
@@ -214,6 +301,33 @@ public class SMatrix implements HMatrix{
 	}
 	
 	@Override
+	public void dotMult(HMatrix m){
+		if(m instanceof SMatrix) {
+			dotMult((SMatrix) m);
+		} else {
+			dotMult((HMatrix) m);
+		}
+	}
+	
+	@Override
+	public void dotMult(SMatrix m){
+		if(cols == m.getCols()) {
+			for(int i = 0; i < cols; i++) {
+				for(int j = 0; j < cols; j++) {
+					matrix[i][j] *= m.getValue(i, j);
+				}
+			}
+		} else {
+			System.out.println("Cannot dot-multiply matrices as the dimensions do not match");
+		}
+	}
+	
+	@Override
+	public void dotMult(NMatrix m){
+		System.out.println("Cannot dot-multiply matrices as the dimensions do not match");
+	}
+	
+	@Override
 	public NMatrix mult(SMatrix m, boolean c){
 		// unused in this class
 		return null;
@@ -223,21 +337,6 @@ public class SMatrix implements HMatrix{
 	public SMatrix mult(NMatrix m, boolean c){
 		// unused in this class
 		return null;
-	}
-	
-	public NMatrix mult(NMatrix m, int c){
-		NMatrix n = new NMatrix(m.getCols(), cols);
-		float temp;
-		for(int i = 0; i < m.getCols(); i++) {
-			for(int j = 0; j < cols; j++) {
-				temp = 0;
-				for(int k = 0; k < m.getRows(); k++) {
-					temp += getValue(k, j) * m.getValue(i, k);
-				}
-				n.setValue(i, j, temp);
-			}
-		}
-		return n;
 	}
 	
 	@Override
@@ -303,91 +402,19 @@ public class SMatrix implements HMatrix{
 		}
 	}
 	
-	//build a permutation matrix of size n. Pass in an array of ints that describes the permutation matrix
-	// for example [0,3,1,4,2] represents:
-	// 1  0  0  0  0
-	// 0  0  0  1  0
-	// 0  0  1  0  0
-	// 0  0  0  0  1
-	// 0  1  0  0  0
-	public static SMatrix permutation(int n, int[] swaps){
-		SMatrix perm = new SMatrix(n, 0F);
-		for(int i = 0; i < swaps.length; i++) {
-			perm.setValue(swaps[i], i, 1F);
+	public NMatrix mult(NMatrix m, int c){
+		NMatrix n = new NMatrix(m.getCols(), cols);
+		float temp;
+		for(int i = 0; i < m.getCols(); i++) {
+			for(int j = 0; j < cols; j++) {
+				temp = 0;
+				for(int k = 0; k < m.getRows(); k++) {
+					temp += getValue(k, j) * m.getValue(i, k);
+				}
+				n.setValue(i, j, temp);
+			}
 		}
-		return perm;
-	}
-	
-	public static SMatrix rotation2D(){
-		double angle = ThreadLocalRandom.current().nextDouble(0, 2 * Math.PI);
-		SMatrix m = new SMatrix(2);
-		float sin = (float) Math.sin(angle);
-		float cos = (float) Math.cos(angle);
-		m.setValue(0, 0, cos);
-		m.setValue(0, 1, sin);
-		m.setValue(1, 0, -1 * sin);
-		m.setValue(1, 1, cos);
-		return m;
-	}
-	
-	public static SMatrix rotation2D(double angle){
-		SMatrix m = new SMatrix(2);
-		float sin = (float) Math.sin(angle);
-		float cos = (float) Math.cos(angle);
-		m.setValue(0, 0, cos);
-		m.setValue(0, 1, sin);
-		m.setValue(1, 0, -1 * sin);
-		m.setValue(1, 1, cos);
-		return m;
-	}
-	
-	public static SMatrix rotation3D(){
-		SMatrix m = new SMatrix(3);
-		double a = ThreadLocalRandom.current().nextDouble(0, 2 * Math.PI);
-		double b = ThreadLocalRandom.current().nextDouble(0, 2 * Math.PI);
-		double c = ThreadLocalRandom.current().nextDouble(0, 2 * Math.PI);
-		
-		float sina = (float) Math.sin(a);
-		float sinb = (float) Math.sin(b);
-		float sinc = (float) Math.sin(c);
-		float cosa = (float) Math.cos(a);
-		float cosb = (float) Math.cos(b);
-		float cosc = (float) Math.cos(c);
-		
-		m.setValue(0, 0, cosa * cosb);
-		m.setValue(0, 1, sina * cosb);
-		m.setValue(0, 2, -1 * sinb);
-		m.setValue(1, 0, cosa * sinb * sinc - sina * cosc);
-		m.setValue(1, 1, sina * sinb * sinc + cosa * cosc);
-		m.setValue(1, 2, cosb * sinc);
-		m.setValue(2, 0, cosa * sinb * cosc + sina * sinc);
-		m.setValue(2, 1, sina * sinb * cosc - cosa * sinc);
-		m.setValue(2, 2, cosb * cosc);
-		
-		return m;
-	}
-	
-	public static SMatrix rotation3D(double a, double b, double c){
-		SMatrix m = new SMatrix(3);
-		
-		float sina = (float) Math.sin(a);
-		float sinb = (float) Math.sin(b);
-		float sinc = (float) Math.sin(c);
-		float cosa = (float) Math.cos(a);
-		float cosb = (float) Math.cos(b);
-		float cosc = (float) Math.cos(c);
-		
-		m.setValue(0, 0, cosa * cosb);
-		m.setValue(0, 1, sina * cosb);
-		m.setValue(0, 2, -1 * sinb);
-		m.setValue(1, 0, cosa * sinb * sinc - sina * cosc);
-		m.setValue(1, 1, sina * sinb * sinc + cosa * cosc);
-		m.setValue(1, 2, cosb * sinc);
-		m.setValue(2, 0, cosa * sinb * cosc + sina * sinc);
-		m.setValue(2, 1, sina * sinb * cosc - cosa * sinc);
-		m.setValue(2, 2, cosb * cosc);
-		
-		return m;
+		return n;
 	}
 	
 	public float trace(){
