@@ -1,5 +1,7 @@
 package HarrisMatrix;
 
+import java.util.Arrays;
+
 public class PMatrix3D implements PMatrix{
 	
 	public double d00, d01, d02, d03;
@@ -181,14 +183,14 @@ public class PMatrix3D implements PMatrix{
 		if(t == null || (t.length != 3 && t.length != 4)) {
 			t = new double[3];
 		}
-		if(v == t) {
+		if(Arrays.equals(v, t)) {
 			throw new RuntimeException("the source and target vectors for multiply cannot be the same");
 		}
 		if(t.length == 3) {
 			t[0] = v[0] * d00 + v[1] * d01 + v[2] * d02 + d03;
 			t[1] = v[0] * d10 + v[1] * d11 + v[2] * d12 + d13;
 			t[2] = v[0] * d20 + v[1] * d21 + v[2] * d22 + d23;
-		} else if(t.length == 4) {
+		} else {
 			t[0] = v[0] * d00 + v[1] * d01 + v[2] * d02 + v[3] * d03;
 			t[1] = v[0] * d10 + v[1] * d11 + v[2] * d12 + v[3] * d13;
 			t[2] = v[0] * d20 + v[1] * d21 + v[2] * d22 + v[3] * d23;
