@@ -181,6 +181,24 @@ public class PVector{
 		target.set(PVector.fromAngle3D(theta, phi));
 	}
 	
+	public static PVector project(PVector a, PVector b){
+		return a.project(b);
+	}
+	
+	public static PVector reject(PVector a, PVector b){
+		return a.reject(b);
+	}
+	
+	public PVector project(PVector b){
+		PVector a;
+		a = PVector.mult(b, PVector.dot(this, b) / PVector.dot(b, b));
+		return a;
+	}
+	
+	public PVector reject(PVector b){
+		return PVector.sub(this, PVector.project(this, b));
+	}
+	
 	public void set(double a, double b){
 		x = a;
 		y = b;
