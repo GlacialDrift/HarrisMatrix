@@ -100,6 +100,8 @@ public class NMatrix implements HMatrix{
 	
 	@Override
 	public void setMatrix(float[][] m){
+		cols = m.length;
+		rows = m[0].length;
 		matrix = m;
 	}
 	
@@ -346,9 +348,9 @@ public class NMatrix implements HMatrix{
 	
 	@Override
 	public void print(){
-		for(int i = 0; i < cols; i++) {
-			for(int j = 0; j < rows; j++) {
-				System.out.print(matrix[i][j] + " ");
+		for(int i = 0; i < rows; i++) {
+			for(int j = 0; j < cols; j++) {
+				System.out.print(matrix[j][i] + " ");
 			}
 			System.out.print("\n");
 		}

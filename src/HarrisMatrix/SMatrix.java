@@ -436,7 +436,7 @@ public class SMatrix implements HMatrix{
 	public void print(){
 		for(int i = 0; i < cols; i++) {
 			for(int j = 0; j < cols; j++) {
-				System.out.print(matrix[i][j] + " ");
+				System.out.print(matrix[j][i] + " ");
 			}
 			System.out.print("\n");
 		}
