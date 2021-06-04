@@ -1,30 +1,30 @@
 package HarrisMatrix;
 
 public class NMatrix implements HMatrix {
-
+    
     private int cols;
     private int rows;
     private float[][] matrix;
-
+    
     public NMatrix() {
         new NMatrix(0, 0, 0F);
     }
-
+    
     public NMatrix(int c, int r) {
         new NMatrix(c, r, 0.0F);
     }
-
+    
     public NMatrix(float f) {
         new NMatrix(0, 0, f);
     }
-
+    
     public NMatrix(int c, int r, float f) {
         cols = c;
         rows = r;
         matrix = new float[c][r];
         fill(f);
     }
-
+    
     public void fill(float f) {
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
@@ -32,92 +32,92 @@ public class NMatrix implements HMatrix {
             }
         }
     }
-
+    
     public NMatrix copy() {
         NMatrix c = new NMatrix(cols, rows);
         c.setMatrix(matrix);
         return c;
     }
-
+    
     public int getCols() {
         return cols;
     }
-
+    
     public void setCols(int c) {
         cols = c;
     }
-
+    
     public int getRows() {
         return rows;
     }
-
+    
     public void setRows(int r) {
         rows = r;
     }
-
+    
     public void rebuild() {
         rebuild(2, 2, 0F);
     }
-
+    
     public void rebuild(int c, int r) {
         rebuild(c, r, 0F);
     }
-
+    
     public void rebuild(float f) {
         rebuild(2, 2, f);
     }
-
+    
     public void rebuild(int c, int r, float f) {
         setRows(r);
         setCols(c);
         matrix = new float[cols][rows];
         fill(f);
     }
-
+    
     @Override
     public float getValue(int c, int r) {
         return matrix[c][r];
     }
-
+    
     @Override
     public void setValue(int c, int r, float f) {
         matrix[c][r] = f;
     }
-
+    
     @Override
     public float[][] getMatrix() {
         return matrix;
     }
-
+    
     @Override
     public void setMatrix(float[][] m) {
         matrix = m;
     }
-
+    
     @Override
     public void fillCol(int c, float f) {
         for (int i = 0; i < rows; i++) {
             matrix[c][i] = f;
         }
     }
-
+    
     @Override
     public void fillRow(int r, float f) {
         for (int i = 0; i < cols; i++) {
             matrix[i][r] = f;
         }
     }
-
+    
     @Override
     public void reset() {
         reset(0F);
     }
-
+    
     @Override
     public void increment() {
         increment(1.0F);
     }
-
+    
     @Override
     public void increment(float f) {
         for (int i = 0; i < cols; i++) {
@@ -126,7 +126,7 @@ public class NMatrix implements HMatrix {
             }
         }
     }
-
+    
     @Override
     public void add(HMatrix m) {
         if (m instanceof SMatrix) {
@@ -136,7 +136,7 @@ public class NMatrix implements HMatrix {
             add((NMatrix) m);
         }
     }
-
+    
     @Override
     public void add(SMatrix m) {
         if (cols != m.getCols() || rows != m.getRows()) {
@@ -150,7 +150,7 @@ public class NMatrix implements HMatrix {
             }
         }
     }
-
+    
     @Override
     public void add(NMatrix m) {
         if (cols != m.getCols() || rows != m.getRows()) {
@@ -164,7 +164,7 @@ public class NMatrix implements HMatrix {
             }
         }
     }
-
+    
     @Override
     public void mult(float f) {
         for (int i = 0; i < cols; i++) {
@@ -173,7 +173,9 @@ public class NMatrix implements HMatrix {
             }
         }
     }
-
+    
+    // test github signing commits with gpg key
+    
     @Override
     public void mult(HMatrix m) {
         if (m instanceof NMatrix) {
@@ -196,7 +198,7 @@ public class NMatrix implements HMatrix {
             }
         }
     }
-
+    
     @Override
     public void mult(SMatrix m) {
         float f;
@@ -212,7 +214,7 @@ public class NMatrix implements HMatrix {
         }
         setMatrix(temp.getMatrix());
     }
-
+    
     @Override
     public void mult(NMatrix m) {
         NMatrix n = new NMatrix(m.getCols(), rows);
@@ -229,7 +231,7 @@ public class NMatrix implements HMatrix {
         rebuild(m.getCols(), rows);
         setMatrix(n.getMatrix());
     }
-
+    
     @Override
     public void dotMult(HMatrix m) {
         if (m instanceof SMatrix) {
@@ -238,12 +240,12 @@ public class NMatrix implements HMatrix {
             dotMult((NMatrix) m);
         }
     }
-
+    
     @Override
     public void dotMult(SMatrix m) {
         System.out.println("Cannot dot-multiply matrices as the dimensions do not match");
     }
-
+    
     @Override
     public void dotMult(NMatrix m) {
         if (cols == m.getCols() && rows == m.getRows()) {
@@ -256,13 +258,13 @@ public class NMatrix implements HMatrix {
             System.out.println("Cannot dot-multiply matrices as the dimensions do not match");
         }
     }
-
+    
     @Override
     public NMatrix mult(SMatrix m, boolean c) {
         // cannot multiply an NMatrix by an SMatrix and get
         return null;
     }
-
+    
     @Override
     public SMatrix mult(NMatrix m, boolean c) {
         SMatrix n = new SMatrix();
@@ -279,30 +281,30 @@ public class NMatrix implements HMatrix {
         }
         return n;
     }
-
+    
     @Override
     public void sub(HMatrix m) {
         m.mult(-1F);
         add(m);
     }
-
+    
     @Override
     public void sub(SMatrix m) {
         m.mult(-1F);
         add(m);
     }
-
+    
     @Override
     public void sub(NMatrix m) {
         m.mult(-1F);
         add(m);
     }
-
+    
     @Override
     public void div(float f) {
         mult(1 / f);
     }
-
+    
     @Override
     public HMatrix minor(int c, int r) {
         HMatrix m = new NMatrix(cols - 1, rows - 1);
@@ -321,7 +323,7 @@ public class NMatrix implements HMatrix {
         }
         return m;
     }
-
+    
     @Override
     public HMatrix transpose() {
         HMatrix t = new NMatrix(rows, cols);
@@ -332,7 +334,7 @@ public class NMatrix implements HMatrix {
         }
         return t;
     }
-
+    
     @Override
     public void print() {
         for (int i = 0; i < cols; i++) {
@@ -342,7 +344,7 @@ public class NMatrix implements HMatrix {
             System.out.print("\n");
         }
     }
-
+    
     public void reset(float f) {
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
