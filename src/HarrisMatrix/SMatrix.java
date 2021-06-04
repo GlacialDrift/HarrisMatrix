@@ -216,6 +216,7 @@ public class SMatrix implements HMatrix{
 	
 	@Override
 	public void setMatrix(float[][] m){
+		cols = m[0].length;
 		matrix = m;
 	}
 	
@@ -483,6 +484,7 @@ public class SMatrix implements HMatrix{
 	}
 	
 	public SMatrix inverse(){
+		int decimals = 4;
 		float det = det();
 		SMatrix s = new SMatrix(cols);
 		HMatrix temp;
@@ -493,9 +495,6 @@ public class SMatrix implements HMatrix{
 				temp = minor(i, j);
 				t = (SMatrix) temp;
 				f = t.det() * (float) Math.pow(-1.0, i + j);
-				/*if(Math.abs(f) < 1 && Math.abs(f) >= 0) {
-					f = truncate(f, 4);
-				}*/
 				s.setValue(i, j, f);
 			}
 		}
@@ -504,6 +503,13 @@ public class SMatrix implements HMatrix{
 			return null;
 		} else {
 			s.mult(1 / det);
+			for(int i = 0; i < cols; i++) {
+				for(int j = 0; j < cols; j++) {
+					if(Math.abs(s.getValue(i, j)) < 1 && Math.abs(s.getValue(i, j)) >= 0) {
+						s.setValue(i, j, truncate(s.getValue(i, j), decimals));
+					}
+				}
+			}
 			return s;
 		}
 	}
