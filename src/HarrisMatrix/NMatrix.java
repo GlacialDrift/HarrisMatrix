@@ -363,4 +363,30 @@ public class NMatrix implements HMatrix{
 			}
 		}
 	}
+	
+	@Override
+	public int hashCode(){
+		int hash = 7;
+		hash = hash * 31 + cols;
+		hash = hash * 31 + rows;
+		for(int i = 0; i < rows; i++) {
+			for(int j = 0; j < cols; j++) {
+				hash = hash * 31 + (int) matrix[j][i];
+			}
+		}
+		return hash;
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		NMatrix m = (NMatrix) o;
+		if(cols != m.getCols()) return false;
+		if(rows != m.getRows()) return false;
+		for(int i = 0; i < rows; i++) {
+			for(int j = 0; j < cols; j++) {
+				if(matrix[j][i] != m.getValue(j, i)) return false;
+			}
+		}
+		return true;
+	}
 }

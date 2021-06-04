@@ -150,6 +150,35 @@ public class SMatrix implements HMatrix{
 		return b.floatValue();
 	}
 	
+	@Override
+	public int hashCode(){
+		int hash = 7;
+		hash = hash * 31 + cols;
+		
+		for(int i = 0; i < cols; i++) {
+			for(int j = 0; j < cols; j++) {
+				hash = hash * 31 + (int) matrix[j][i];
+			}
+		}
+		return hash;
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		SMatrix m = (SMatrix) o;
+		if(cols != m.getCols()) {
+			return false;
+		}
+		for(int i = 0; i < cols; i++) {
+			for(int j = 0; j < cols; j++) {
+				if(matrix[i][j] != m.getValue(i, j)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	public void fill(float f){
 		for(int i = 0; i < cols; i++) {
 			for(int j = 0; j < cols; j++) {
