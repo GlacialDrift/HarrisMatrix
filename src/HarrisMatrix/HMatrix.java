@@ -28,7 +28,7 @@ public interface HMatrix{
 	void sub(NMatrix m);
 	void div(float f);
 	HMatrix minor(int c, int r);
-	HMatrix transpose();
+	void transpose();
 	void print();
 	
 }

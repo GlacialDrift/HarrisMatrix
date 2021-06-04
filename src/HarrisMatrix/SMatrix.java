@@ -1,5 +1,8 @@
 package HarrisMatrix;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class SMatrix implements HMatrix{
@@ -8,15 +11,21 @@ public class SMatrix implements HMatrix{
 	private float[][] matrix;
 	
 	public SMatrix(){
-		new SMatrix(3, 0F);
+		cols = 3;
+		matrix = new float[3][3];
+		fill(0F);
 	}
 	
 	public SMatrix(int c){
-		new SMatrix(c, 0F);
+		cols = c;
+		matrix = new float[c][c];
+		fill(0F);
 	}
 	
 	public SMatrix(float f){
-		new SMatrix(3, f);
+		cols = 3;
+		matrix = new float[3][3];
+		fill(f);
 	}
 	
 	public SMatrix(int c, float f){
@@ -110,6 +119,35 @@ public class SMatrix implements HMatrix{
 		m.setValue(2, 2, cosb * cosc);
 		
 		return m;
+	}
+	
+	public static float truncate(float value, int dec){
+		String s = String.valueOf(value);
+		float d = value;
+		if(s.contains(".")) {
+			int dot = s.indexOf('.');
+			int decimals = s.length() - dot;
+			if(decimals <= dec) {
+				d = Float.parseFloat(s);
+			} else {
+				s = s.substring(0, dot + dec + 1);
+				d = Float.parseFloat(s);
+			}
+		}
+		return d;
+	}
+	
+	private static float sigDigits(float value, int s){
+		BigDecimal b = new BigDecimal(String.valueOf(value));
+		BigDecimal power = new BigDecimal(String.valueOf(Math.pow(10, s)));
+		b = b.multiply(power);
+		if(value > 0) {
+			b = b.round(new MathContext(s, RoundingMode.FLOOR));
+		} else {
+			b = b.round(new MathContext(s, RoundingMode.CEILING));
+		}
+		b = b.divide(power);
+		return b.floatValue();
 	}
 	
 	public void fill(float f){
@@ -364,11 +402,12 @@ public class SMatrix implements HMatrix{
 	
 	@Override
 	public HMatrix minor(int c, int r){
-		HMatrix m = new NMatrix(cols - 1);
+		HMatrix m = new SMatrix(cols - 1);
 		int xCount = 0;
 		int yCount = 0;
 		for(int i = 0; i < cols; i++) {
 			if(i != c) {
+				yCount = 0;
 				for(int j = 0; j < cols; j++) {
 					if(j != r) {
 						m.setValue(xCount, yCount, matrix[i][j]);
@@ -382,14 +421,14 @@ public class SMatrix implements HMatrix{
 	}
 	
 	@Override
-	public HMatrix transpose(){
+	public void transpose(){
 		HMatrix n = new SMatrix(cols);
 		for(int i = 0; i < cols; i++) {
 			for(int j = 0; j < cols; j++) {
-				n.setValue(i, j, matrix[i][j]);
+				n.setValue(i, j, matrix[j][i]);
 			}
 		}
-		return n;
+		setMatrix(n.getMatrix());
 	}
 	
 	@Override
@@ -448,11 +487,16 @@ public class SMatrix implements HMatrix{
 		SMatrix s = new SMatrix(cols);
 		HMatrix temp;
 		SMatrix t;
+		float f;
 		for(int i = 0; i < cols; i++) {
 			for(int j = 0; j < cols; j++) {
 				temp = minor(i, j);
 				t = (SMatrix) temp;
-				s.setValue(i, j, t.det() * (float) Math.pow(-1.0, i + j));
+				f = t.det() * (float) Math.pow(-1.0, i + j);
+				/*if(Math.abs(f) < 1 && Math.abs(f) >= 0) {
+					f = truncate(f, 4);
+				}*/
+				s.setValue(i, j, f);
 			}
 		}
 		s.transpose();
