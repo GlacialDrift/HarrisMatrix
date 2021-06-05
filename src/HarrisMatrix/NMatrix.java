@@ -379,7 +379,6 @@ public class NMatrix implements HMatrix {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof NMatrix m)) return false;
-        
         if (cols != m.getCols()) return false;
         if (rows != m.getRows()) return false;
         for (int i = 0; i < rows; i++) {

@@ -1,5 +1,7 @@
 package HarrisMatrix;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -405,7 +407,7 @@ public class SMatrix implements HMatrix {
     }
     
     @Override
-    public void sub(HMatrix m) {
+    public void sub(@NotNull HMatrix m) {
         m.mult(-1F);
         add(m);
     }
